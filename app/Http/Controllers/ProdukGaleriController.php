@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProdukRequest;
+use App\Http\Requests\ProdukGaleriRequest;
 use App\Models\Produk;
 use App\Models\ProdukGaleri;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
-class ProdukController extends Controller
+class ProdukGaleriController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,11 +22,11 @@ class ProdukController extends Controller
     public function index()
     {
         $data = [
-            'produk_index' => 'active',
-            'produk' => Produk::all(),
+            'produk_galeri_index' => 'active',
+            'produk' => ProdukGaleri::with('produk')->get(),
         ];
 
-        return view('pages.produk.index', $data);
+        return view('pages.produk-galeri.index', $data);
     }
 
     /**
@@ -37,10 +37,11 @@ class ProdukController extends Controller
     public function create()
     {
         $data = [
-            'produk_create' => 'active',
+            'produk_galeri_create' => 'active',
+            'produk' => Produk::all(),
         ];
 
-        return view('pages.produk.create', $data);
+        return view('pages.produk-galeri.create', $data);
     }
 
     /**
@@ -49,14 +50,14 @@ class ProdukController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProdukRequest $request)
+    public function store(ProdukGaleriRequest $request)
     {
         $data = $request->all();
-        $data['slug'] = Str::slug($request->nama_produk);
+        $data['foto_produk'] = $request->file('foto_produk')->store('gambar-produk', 'public');
 
-        $cek = Produk::create($data);
+        $cek = ProdukGaleri::create($data);
         if ($cek) {
-            return redirect(route('produk.index'));
+            return redirect(route('foto-produk.index'));
         }
         return back();
     }
@@ -80,11 +81,7 @@ class ProdukController extends Controller
      */
     public function edit($id)
     {
-        $data = [
-            'produk' => Produk::findOrFail($id),
-        ];
-
-        return view('pages.produk.edit', $data);
+        //
     }
 
     /**
@@ -94,17 +91,9 @@ class ProdukController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProdukRequest $request, $id)
+    public function update(ProdukGaleriRequest $request, $id)
     {
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->nama_produk);
-
-        $produk = Produk::findOrFail($id);
-        $cek = $produk->update($data);
-        if ($cek) {
-            return redirect(route('produk.index'));
-        }
-        return back();
+        //
     }
 
     /**
@@ -115,23 +104,11 @@ class ProdukController extends Controller
      */
     public function destroy($id)
     {
-        $produk = Produk::findOrFail($id);
-        $cek = $produk->delete();
+        $fotoProduk = ProdukGaleri::findOrFail($id);
+        $cek = $fotoProduk->delete();
         if ($cek) {
-            ProdukGaleri::where('produk_id', $id)->delete();
-            return redirect(route('produk.index'));
+            return redirect(route('foto-produk.index'));
         }
         return back();
-    }
-
-    public function galeri($id)
-    {
-        $data = [
-            'produk_index' => 'active',
-            'produk' => Produk::findOrFail($id),
-            'produkGaleri' => ProdukGaleri::with('produk')->where('produk_id' , $id)->get(),
-        ];
-
-        return view('pages.produk.galeri', $data);
     }
 }

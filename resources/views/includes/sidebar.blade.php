@@ -15,11 +15,11 @@
                 </li>
 
                 <li class="menu-title">Foto Barang</li><!-- /.menu-title -->
-                <li class="">
-                    <a href="#"> <i class="menu-icon fa fa-list"></i>Lihat Foto Barang</a>
+                <li class="{{ $produk_galeri_index ?? '' }}">
+                    <a href="{{ route('foto-produk.index') }}"> <i class="menu-icon fa fa-list"></i>Lihat Foto Produk</a>
                 </li>
-                <li class="">
-                    <a href="#"> <i class="menu-icon fa fa-plus"></i>Tambah Foto Barang</a>
+                <li class="{{ $produk_galeri_create ?? '' }}">
+                    <a href="{{ route('foto-produk.create') }}"> <i class="menu-icon fa fa-plus"></i>Tambah Foto Produk</a>
                 </li>
 
                 <li class="menu-title">Transaksi</li><!-- /.menu-title -->

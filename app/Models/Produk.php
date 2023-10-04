@@ -16,6 +16,6 @@ class Produk extends Model
 
     public function galeri()
     {
-        // return $this->hasMany(ProdukGaleri::class, 'produk_id');
+        return $this->hasMany(ProdukGaleri::class, 'produk_id');
     }
 }

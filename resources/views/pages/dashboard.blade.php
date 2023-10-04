@@ -13,7 +13,7 @@
                             </div>
                             <div class="stat-content">
                                 <div class="text-left dib">
-                                    <div class="stat-text">Rp. <span class="count">123901212</span></div>
+                                    <div class="stat-text">Rp. <span class="count">250000</span></div>
                                     <div class="stat-heading">Penghasilan</div>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                             </div>
                             <div class="stat-content">
                                 <div class="text-left dib">
-                                    <div class="stat-text"><span class="count">3435</span></div>
+                                    <div class="stat-text"><span class="count">30</span></div>
                                     <div class="stat-heading">Penjualan</div>
                                 </div>
                             </div>
