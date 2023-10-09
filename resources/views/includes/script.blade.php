@@ -268,3 +268,37 @@
         // Bar Chart #flotBarChart End
     });
 </script>
+
+<!--Memunculkan Modal-->
+<script>
+    // $(function($){
+    jQuery(document).ready(function($){
+        $('#modal-lihat').on('show.bs.modal', function(event){
+            let tombol = $(event.relatedTarget);
+            let modal = $(this);
+
+            modal.find('.modal-body').load(tombol.data('remote'));
+            modal.find('.modal-title').html(tombol.data('title'));
+        });
+    });
+
+</script>
+
+<div class="modal" id="modal-lihat" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h5 class="modal-title"></h5>
+            </div>
+            <div class="modal-body">
+                <i class="fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Akhir Memunculkan Modal-->
+

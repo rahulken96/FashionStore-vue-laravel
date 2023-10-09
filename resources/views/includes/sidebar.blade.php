@@ -23,8 +23,8 @@
                 </li>
 
                 <li class="menu-title">Transaksi</li><!-- /.menu-title -->
-                <li class="">
-                    <a href="#"> <i class="menu-icon fa fa-list"></i>Lihat Transaksi</a>
+                <li class="{{ $trx_index ?? '' }}">
+                    <a href="{{ route('transaksi.index') }}"> <i class="menu-icon fa fa-list"></i>Lihat Transaksi</a>
                 </li>
             </ul>
         </div>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProdukGaleriController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -22,5 +23,8 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('produk/{id}/galeri-produk', [ProdukController::class, 'galeri'])->name('produk.galeri');
 Route::resource('produk', ProdukController::class);
+
 Route::resource('foto-produk', ProdukGaleriController::class);
 
+Route::get('transaksi/{id}/set-status', [TransaksiController::class, 'setStatus'])->name('transaksi.status');
+Route::resource('transaksi', TransaksiController::class);
