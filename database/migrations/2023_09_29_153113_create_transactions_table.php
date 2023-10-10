@@ -18,7 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->string('uuid');
             $table->string('nama');
             $table->string('email');
-            $table->string('nomor');
+            $table->string('noHP');
             $table->string('alamat');
             $table->integer('total_transaksi');
             $table->string('status_transaksi');

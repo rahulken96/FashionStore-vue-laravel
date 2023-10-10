@@ -35,10 +35,19 @@ class ResponseFormatter
 
     public static function responseProduk($data)
     {
-        if ($data) {
+        if ($data->count() > 0) {
             return self::sukses($data, "Data Produk Berhasil Diambil!");
         } else {
             return self::gagal($data, "Data Produk Gagal Diambil!");
+        }
+    }
+
+    public static function responseCheckout($data)
+    {
+        if ($data->count() > 0) {
+            return self::sukses($data, "Checkout Berhasil dilakukan!");
+        } else {
+            return self::gagal($data, "Checkout Gagal dilakukan!");
         }
     }
 }

@@ -19,14 +19,33 @@ class ProdukController extends Controller
         $harga_min = $request->min;
         $harga_max = $request->max;
 
+        $query = Produk::with('galeri');
         if ($produk_id) {
-            $produk = Produk::with('galeri')->find($produk_id);
+            $produk = $query->find($produk_id);
             return ResponseFormatter::responseProduk($produk);
-        } elseif ($slug) {
-            $produk = Produk::with('galeri')->where('slug', $slug)->first();
+        }
+        if ($slug) {
+            $produk = $query->where('slug', $slug)->first();
             return ResponseFormatter::responseProduk($produk);
-        }else{
-            $produk = Produk::with('galeri')->limit($limit)->get();
+        }
+        if ($nama_produk) {
+            $produk = $query->where('nama_produk', 'like', "%$nama_produk%")->get();
+            return ResponseFormatter::responseProduk($produk);
+        }
+        if ($tipe_produk) {
+            $produk = $query->where('tipe_produk', 'like', "%$tipe_produk%")->get();
+            return ResponseFormatter::responseProduk($produk);
+        }
+        if ($harga_min) {
+            $produk = $query->where('harga_produk', '>=', $harga_min)->get();
+            return ResponseFormatter::responseProduk($produk);
+        }
+        if ($harga_max) {
+            $produk = $query->where('harga_produk', '<=', $harga_max)->get();
+            return ResponseFormatter::responseProduk($produk);
+        }
+        else{
+            $produk = $query->orderBy('produk_id', 'DESC')->limit($limit)->get();
             return ResponseFormatter::responseProduk($produk);
         }
     }
