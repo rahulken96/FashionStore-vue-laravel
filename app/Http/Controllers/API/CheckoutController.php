@@ -30,6 +30,6 @@ class CheckoutController extends Controller
 
         $trx->detail()->saveMany($detailTRX);
 
-        return ResponseFormatter::sukses($trx);
+        return ResponseFormatter::responseCheckout($trx);
     }
 }

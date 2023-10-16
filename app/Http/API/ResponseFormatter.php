@@ -35,7 +35,7 @@ class ResponseFormatter
 
     public static function responseProduk($data)
     {
-        if ($data->count() > 0) {
+        if (!empty($data)) {
             return self::sukses($data, "Data Produk Berhasil Diambil!");
         } else {
             return self::gagal($data, "Data Produk Gagal Diambil!");
@@ -44,10 +44,19 @@ class ResponseFormatter
 
     public static function responseCheckout($data)
     {
-        if ($data->count() > 0) {
+        if (!empty($data)) {
             return self::sukses($data, "Checkout Berhasil dilakukan!");
         } else {
             return self::gagal($data, "Checkout Gagal dilakukan!");
+        }
+    }
+
+    public static function responseTRX($data)
+    {
+        if (!empty($data)) {
+            return self::sukses($data, "Data Transaksi Berhasil diambil!");
+        } else {
+            return self::gagal($data, "Data Transaksi Gagal diambil!");
         }
     }
 }
