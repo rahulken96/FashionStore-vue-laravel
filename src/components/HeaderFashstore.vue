@@ -46,7 +46,7 @@
                               <h6>{{ item.nama }}</h6>
                             </div>
                           </td>
-                          <td @click="hapusItem(keranjangUser.index)" class="si-close" >
+                          <td @click="hapusItem(item.id)" class="si-close" >
                             <i class="ti-close"></i>
                           </td>
                         </tr>
@@ -89,10 +89,18 @@ export default {
     };
   },
   methods:{
-    hapusItem(index){
+    hapusItem(produkID){
+      /* Cari tahu ID produk yang akan dihapus berdasarkan data dari localstorage keranjangUser */
+      let penyimpananKeranjang = JSON.parse(localStorage.getItem('keranjangUser'));
+      let item = penyimpananKeranjang.map(item => item.id);
+
+      /* Cocokan ID produk yang dihapus dan dengan yang ada di local storage */
+      let index = item.findIndex(id => id == produkID);
       this.keranjangUser.splice(index, 1);
-      const data = JSON.stringify(this.keranjangUser);
-      localStorage.setItem('keranjangUser', data);
+
+      const check = JSON.stringify(this.keranjangUser);
+      localStorage.setItem("keranjangUser", check);
+      window.location.reload();
     }
   },
   mounted() {
