@@ -22,7 +22,7 @@ class TransaksiController extends Controller
     {
         $data = [
             'trx_index' => 'active',
-            'trx'       => Transaksi::all(),
+            'trx'       => Transaksi::orderBy('created_at', 'desc')->get(),
         ];
 
         return view('pages.transaksi.index', $data);
