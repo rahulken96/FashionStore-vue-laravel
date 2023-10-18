@@ -34,27 +34,15 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr v-for="item in keranjangUser" :key="item.id">
                         <td class="cart-pic first-row">
-                          <img src="img/cart-page/product-1.jpg" />
+                          <img class="img-cart" :src="item.foto" />
                         </td>
                         <td class="cart-title first-row text-center">
-                          <h5>Pure Pineapple</h5>
+                          <h5>{{ item.nama }}</h5>
                         </td>
-                        <td class="p-price first-row">$60.00</td>
-                        <td class="delete-item">
-                          <a href="#"><i class="material-icons"> close </i></a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="cart-pic first-row">
-                          <img src="img/cart-page/product-1.jpg" />
-                        </td>
-                        <td class="cart-title first-row text-center">
-                          <h5>Pure Pineapple</h5>
-                        </td>
-                        <td class="p-price first-row">$60.00</td>
-                        <td class="delete-item">
+                        <td class="p-price first-row">Rp {{ item.harga }}</td>
+                        <td @click="hapusItem(keranjangUser.index)" class="delete-item">
                           <a href="#"><i class="material-icons"> close </i></a>
                         </td>
                       </tr>
@@ -74,6 +62,7 @@
                         id="namaLengkap"
                         aria-describedby="namaHelp"
                         placeholder="Masukan Nama"
+                        v-model="infoPembeli.nama"
                       />
                     </div>
                     <div class="form-group">
@@ -84,6 +73,7 @@
                         id="emailAddress"
                         aria-describedby="emailHelp"
                         placeholder="Masukan Email"
+                        v-model="infoPembeli.email"
                       />
                     </div>
                     <div class="form-group">
@@ -94,6 +84,7 @@
                         id="noHP"
                         aria-describedby="noHPHelp"
                         placeholder="Masukan No. HP"
+                        v-model="infoPembeli.noHP"
                       />
                     </div>
                     <div class="form-group">
@@ -102,6 +93,7 @@
                         class="form-control"
                         id="alamatLengkap"
                         rows="3"
+                        v-model="infoPembeli.alamat"
                       ></textarea>
                     </div>
                   </form>
@@ -117,22 +109,22 @@
                     <li class="subtotal">
                       ID Transaction <span>#SH12000</span>
                     </li>
-                    <li class="subtotal mt-3">Subtotal <span>$240.00</span></li>
-                    <li class="subtotal mt-3">Pajak <span>10%</span></li>
+                    <li class="subtotal mt-3">Subtotal <span>Rp {{ subTotal }}</span></li>
+                    <li class="subtotal mt-3">Pajak <span>11%</span></li>
                     <li class="subtotal mt-3">
-                      Total Biaya <span>$440.00</span>
+                      Total Biaya <span>Rp {{ totalHarga }}</span>
                     </li>
                     <li class="subtotal mt-3">
-                      Bank Transfer <span>Mandiri</span>
+                      Bank Transfer <span>CIMB NIAGA</span>
                     </li>
                     <li class="subtotal mt-3">
-                      No. Rekening <span>2208 1996 1403</span>
+                      No. Rekening <span>7630 8630 0800</span>
                     </li>
                     <li class="subtotal mt-3">
-                      Nama Penerima <span>Shayna</span>
+                      Nama Penerima <span>Rahul</span>
                     </li>
                   </ul>
-                  <router-link to="/success" class="proceed-btn">Siap Bayar !</router-link>
+                  <a @click="checkout()" class="proceed-btn">Siap Bayar !</a>
                 </div>
               </div>
             </div>
@@ -149,6 +141,7 @@
 // @ is an alias to /src
 import HeaderFashstore from "@/components/HeaderFashstore.vue";
 import FooterFashstore from "@/components/FooterFashstore.vue";
+import axios from "axios";
 
 export default {
   name: "ShoppingCartView",
@@ -156,5 +149,71 @@ export default {
     HeaderFashstore,
     FooterFashstore,
   },
+  data() {
+    return {
+      gambar_default: "",
+      detail_produk: [],
+      keranjangUser: [],
+      infoPembeli: {
+        nama: '',
+        email: '',
+        noHP: '',
+        alamat: '',
+      },
+    };
+  },
+  methods:{
+    hapusItem(index){
+      this.keranjangUser.splice(index, 1);
+      const data = JSON.stringify(this.keranjangUser);
+      localStorage.setItem('keranjangUser', data);
+    },
+    checkout(){
+      let produkID = this.keranjangUser.map(function(val){
+        return val.id;
+      });
+
+      let checkoutData = {
+        'nama': this.infoPembeli.nama,
+        'email': this.infoPembeli.email,
+        'noHP': this.infoPembeli.noHP,
+        'alamat': this.infoPembeli.alamat,
+        'total_transaksi': this.totalHarga,
+        'status_transaksi': 0,
+        'detail_transaksi': produkID
+      };
+
+      axios.post("http://127.0.0.1:8000/api/checkout", checkoutData)
+      .then(() => this.$router.push('success')) //Redirect ke url /success
+      // eslint-disable-next-line no-console
+      .catch((err) => console.log(err));
+    }
+  },
+  mounted() {
+    if (localStorage.getItem('keranjangUser')) {
+      try {
+        this.keranjangUser = JSON.parse(localStorage.getItem('keranjangUser'));
+      } catch(e) {
+        localStorage.removeItem('keranjangUser');
+      }
+    }
+  },
+  computed: {
+    subTotal() {
+      return this.keranjangUser.reduce(function(val, key) {
+        return val + key.harga;
+      }, 0);  
+    },
+    totalHarga() {
+      return (this.subTotal * 0.11) + this.subTotal;  
+    },
+  }
 };
 </script>
+
+<style scoped>
+  .img-cart{
+    width: 100px;
+    height: 100px;
+  }
+</style>

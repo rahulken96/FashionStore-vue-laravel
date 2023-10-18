@@ -4,12 +4,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-5">
-          <div class="footer-left">
-            <div class="footer-logo">
-                <a href="#">
-                    <!-- <img src="img/logo_website_fashstore_white.png" alt=""/>\ -->
-                </a>
-            </div>
+          <div class="footer-left text-left">
             <ul>
               <li>Alamat    : Cipto, Kota Cirebon</li>
               <li>No. Telp  : +62 953-4242-7975</li>
@@ -24,7 +19,7 @@
           </div>
         </div>
         <div class="col-lg-3 offset-lg-1">
-          <div class="footer-widget">
+          <div class="footer-widget text-left">
             <h5>Information</h5>
             <ul>
               <li><a href="#">About Us</a></li>
@@ -35,7 +30,7 @@
           </div>
         </div>
         <div class="col-lg-3">
-          <div class="footer-widget">
+          <div class="footer-widget text-left">
             <h5>My Account</h5>
             <ul>
               <li><a href="#">My Account</a></li>
@@ -53,7 +48,7 @@
           <div class="col-lg-12">
             <div class="copyright-text">
               Copyright &copy;
-              {{currentDate.getFullYear()}}
+              2019 - {{currentDate.getFullYear()}}
               All rights reserved | FashStore
             </div>
           </div>

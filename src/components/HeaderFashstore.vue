@@ -30,49 +30,41 @@
                 Keranjang Belanja &nbsp;
                 <a href="#">
                   <i class="icon_bag_alt"></i>
-                  <span>3</span>
+                  <span>{{ keranjangUser.length }}</span>
                 </a>
                 <div class="cart-hover">
                   <div class="select-items">
                     <table>
-                      <tbody>
-                        <tr>
+                      <tbody v-if="keranjangUser.length > 0">
+                        <tr v-for="item in keranjangUser" :key="item.id">
                           <td class="si-pic">
-                            <img src="img/select-product-1.jpg" alt="" />
+                            <img class="photo-item" :src="item.foto" alt="" />
                           </td>
                           <td class="si-text">
                             <div class="product-selected">
-                              <p>$60.00 x 1</p>
-                              <h6>Kabino Bedside Table</h6>
+                              <p>Rp {{ item.harga }} x 1</p>
+                              <h6>{{ item.nama }}</h6>
                             </div>
                           </td>
-                          <td class="si-close">
+                          <td @click="hapusItem(item.id)" class="si-close" >
                             <i class="ti-close"></i>
                           </td>
                         </tr>
+                      </tbody>
+                      <tbody v-else>
                         <tr>
-                          <td class="si-pic">
-                            <img src="img/select-product-2.jpg" alt="" />
-                          </td>
-                          <td class="si-text">
-                            <div class="product-selected">
-                              <p>$60.00 x 1</p>
-                              <h6>Kabino Bedside Table</h6>
-                            </div>
-                          </td>
-                          <td class="si-close">
-                            <i class="ti-close"></i>
-                          </td>
+                          <td>Keranjang Kosong...</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                   <div class="select-total">
                     <span>total:</span>
-                    <h5>$120.00</h5>
+                    <h5>Rp {{ totalHarga }}</h5>
                   </div>
                   <div class="select-button">
-                    <a href="#" class="primary-btn view-card">VIEW CARD</a>
+                    
+                    <a href="#" class="btn primary-btn view-card"><router-link to="/cart" style="color: white">VIEW CARD</router-link></a>
                     <a href="#" class="primary-btn checkout-btn">CHECK OUT</a>
                   </div>
                 </div>
@@ -87,7 +79,51 @@
 </template>
 
 <script>
-export default { 
-    name : 'HeaderFashstore',
-}
+export default {
+  name: "HeaderFashstore",
+  data() {
+    return {
+      gambar_default: "",
+      detail_produk: [],
+      keranjangUser: [],
+    };
+  },
+  methods:{
+    hapusItem(produkID){
+      /* Cari tahu ID produk yang akan dihapus berdasarkan data dari localstorage keranjangUser */
+      let penyimpananKeranjang = JSON.parse(localStorage.getItem('keranjangUser'));
+      let item = penyimpananKeranjang.map(item => item.id);
+
+      /* Cocokan ID produk yang dihapus dan dengan yang ada di local storage */
+      let index = item.findIndex(id => id == produkID);
+      this.keranjangUser.splice(index, 1);
+
+      const check = JSON.stringify(this.keranjangUser);
+      localStorage.setItem("keranjangUser", check);
+      window.location.reload();
+    }
+  },
+  mounted() {
+    if (localStorage.getItem('keranjangUser')) {
+      try {
+        this.keranjangUser = JSON.parse(localStorage.getItem('keranjangUser'));
+      } catch(e) {
+        localStorage.removeItem('keranjangUser');
+      }
+    }
+  },
+  computed: {
+    totalHarga() {
+      return this.keranjangUser.reduce(function(val, key) {
+        return val + key.harga;
+      }, 0);  
+    },
+  }
+};
 </script>
+<style scoped>
+  .photo-item{
+    width: 80px;
+    height: 80px;
+  }
+</style>
