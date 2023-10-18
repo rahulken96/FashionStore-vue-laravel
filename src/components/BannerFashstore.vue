@@ -73,6 +73,8 @@ export default {
       this.keranjangUser.push(produkStored);
       const data = JSON.stringify(this.keranjangUser);
       localStorage.setItem("keranjangUser", data);
+
+      window.location.reload();
     },
   },
   mounted() {
