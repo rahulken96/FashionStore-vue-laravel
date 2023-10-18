@@ -62,6 +62,7 @@
                         id="namaLengkap"
                         aria-describedby="namaHelp"
                         placeholder="Masukan Nama"
+                        v-model="infoPembeli.nama"
                       />
                     </div>
                     <div class="form-group">
@@ -72,6 +73,7 @@
                         id="emailAddress"
                         aria-describedby="emailHelp"
                         placeholder="Masukan Email"
+                        v-model="infoPembeli.email"
                       />
                     </div>
                     <div class="form-group">
@@ -82,6 +84,7 @@
                         id="noHP"
                         aria-describedby="noHPHelp"
                         placeholder="Masukan No. HP"
+                        v-model="infoPembeli.noHP"
                       />
                     </div>
                     <div class="form-group">
@@ -90,6 +93,7 @@
                         class="form-control"
                         id="alamatLengkap"
                         rows="3"
+                        v-model="infoPembeli.alamat"
                       ></textarea>
                     </div>
                   </form>
@@ -120,7 +124,7 @@
                       Nama Penerima <span>Rahul</span>
                     </li>
                   </ul>
-                  <router-link to="/success" class="proceed-btn">Siap Bayar !</router-link>
+                  <a @click="checkout()" class="proceed-btn">Siap Bayar !</a>
                 </div>
               </div>
             </div>
@@ -137,6 +141,7 @@
 // @ is an alias to /src
 import HeaderFashstore from "@/components/HeaderFashstore.vue";
 import FooterFashstore from "@/components/FooterFashstore.vue";
+import axios from "axios";
 
 export default {
   name: "ShoppingCartView",
@@ -149,6 +154,12 @@ export default {
       gambar_default: "",
       detail_produk: [],
       keranjangUser: [],
+      infoPembeli: {
+        nama: '',
+        email: '',
+        noHP: '',
+        alamat: '',
+      },
     };
   },
   methods:{
@@ -156,6 +167,26 @@ export default {
       this.keranjangUser.splice(index, 1);
       const data = JSON.stringify(this.keranjangUser);
       localStorage.setItem('keranjangUser', data);
+    },
+    checkout(){
+      let produkID = this.keranjangUser.map(function(val){
+        return val.id;
+      });
+
+      let checkoutData = {
+        'nama': this.infoPembeli.nama,
+        'email': this.infoPembeli.email,
+        'noHP': this.infoPembeli.noHP,
+        'alamat': this.infoPembeli.alamat,
+        'total_transaksi': this.totalHarga,
+        'status_transaksi': 0,
+        'detail_transaksi': produkID
+      };
+
+      axios.post("http://127.0.0.1:8000/api/checkout", checkoutData)
+      .then(() => this.$router.push('success')) //Redirect ke url /success
+      // eslint-disable-next-line no-console
+      .catch((err) => console.log(err));
     }
   },
   mounted() {
