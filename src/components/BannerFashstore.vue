@@ -7,10 +7,17 @@
           <carousel class="product-slider" :items="3" :nav="false" :autoplay="true" :loop="true" :dots="false">
             <div class="product-item" v-for="item in produk" v-bind:key="item.produk_id">
               <div class="pi-pic">
-                <img v-bind:src="item.galeri[0].foto_produk" alt="Foto Produk"/>
+                <img v-bind:src="item.galeri[0].foto_produk" alt="Foto Produk" />
                 <ul>
-                  <li class="w-icon active">
-                    <a :href="product"><i class="icon_bag_alt"></i></a>
+                  <li class="w-icon active" @click="
+                          masukKeranjang(
+                            item.produk_id,
+                            item.nama_produk,
+                            item.harga_produk,
+                            item.galeri[0].foto_produk
+                          )
+                        ">
+                    <a href="#"><i class="icon_bag_alt"></i></a>
                   </li>
                   <li class="quick-view">
                     <router-link v-bind:to="'/product/' + item.produk_id">+ Quick View</router-link>
@@ -31,7 +38,7 @@
           </carousel>
         </div>
         <div class="col-lg-12" v-else>
-          <p> Produk terbaru belum tersedia. </p>
+          <p>Produk terbaru belum tersedia.</p>
         </div>
       </div>
     </div>
@@ -41,24 +48,47 @@
 
 <script>
 import carousel from "vue-owl-carousel";
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   name: "BannerFashstore",
   components: {
     carousel,
   },
-  data (){
-      return{
-        produk : [],
+  data() {
+    return {
+      produk: [],
+      keranjangUser: [],
     };
   },
+  methods: {
+    masukKeranjang(produkID, namaProduk, hargaProduk, fotoProduk) {
+      let produkStored = {
+        id: produkID,
+        nama: namaProduk,
+        harga: hargaProduk,
+        foto: fotoProduk,
+      };
+
+      this.keranjangUser.push(produkStored);
+      const data = JSON.stringify(this.keranjangUser);
+      localStorage.setItem("keranjangUser", data);
+    },
+  },
   mounted() {
+    if (localStorage.getItem("keranjangUser")) {
+      try {
+        this.keranjangUser = JSON.parse(localStorage.getItem("keranjangUser"));
+      } catch (e) {
+        localStorage.removeItem("keranjangUser");
+      }
+    }
+
     axios
-    .get("http://127.0.0.1:8000/api/produk")
-    .then(res => (this.produk = res.data.data))
-    // eslint-disable-next-line no-console
-    .catch(err => console.log(err));
+      .get("http://127.0.0.1:8000/api/produk")
+      .then((res) => (this.produk = res.data.data))
+      // eslint-disable-next-line no-console
+      .catch((err) => console.log(err));
   },
 };
 </script>

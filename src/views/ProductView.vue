@@ -8,7 +8,7 @@
           <div class="col-lg-12">
             <div class="breadcrumb-text product-more">
               <router-link to="/">
-                  <i class="fa fa-home"></i> Home
+                <i class="fa fa-home"></i> Home
               </router-link>
               <span>Detail</span>
             </div>
@@ -28,9 +28,25 @@
                 <div class="product-pic-zoom">
                   <img class="product-big-img" :src="gambar_default" alt="" />
                 </div>
-                <div class="product-thumbs" v-if="detail_produk.galeri.length > 0">
-                  <carousel class="product-thumbs-track ps-slider" :nav="false" :dots="false" :item="3">
-                    <div v-for="foto in detail_produk.galeri" :key="foto.produk_galeri_id" class="pt" @click="ubahGambar(foto.foto_produk)" :class="foto.foto_produk == gambar_default? 'active' : '' ">
+                <div
+                  class="product-thumbs"
+                  v-if="detail_produk.galeri.length > 0"
+                >
+                  <carousel
+                    class="product-thumbs-track ps-slider"
+                    :nav="false"
+                    :dots="false"
+                    :item="3"
+                  >
+                    <div
+                      v-for="foto in detail_produk.galeri"
+                      :key="foto.produk_galeri_id"
+                      class="pt"
+                      @click="ubahGambar(foto.foto_produk)"
+                      :class="
+                        foto.foto_produk == gambar_default ? 'active' : ''
+                      "
+                    >
                       <img :src="foto.foto_produk" alt="Foto Produk" />
                     </div>
                   </carousel>
@@ -42,13 +58,26 @@
                     <span>{{ detail_produk.tipe_produk }}</span>
                     <h3>{{ detail_produk.nama_produk }}</h3>
                   </div>
-                  <div v-html="detail_produk.deskripsi_produk">
-                  </div>
                   <div class="pd-desc">
+                    <p v-html="detail_produk.deskripsi_produk"></p>
                     <h4>Rp {{ detail_produk.harga_produk }}</h4>
                   </div>
                   <div class="quantity">
-                    <router-link to="/cart" class="primary-btn pd-cart">Add To Cart</router-link>
+                    <router-link to="/cart">
+                      <a
+                        href="#"
+                        @click="
+                          masukKeranjang(
+                            detail_produk.produk_id,
+                            detail_produk.nama_produk,
+                            detail_produk.harga_produk,
+                            detail_produk.galeri[0].foto_produk
+                          )
+                        "
+                        class="primary-btn pd-cart"
+                        >Add To Cart</a
+                      >
+                    </router-link>
                   </div>
                 </div>
               </div>
@@ -80,42 +109,57 @@ export default {
     FooterFashstore,
     carousel,
   },
-  data (){
+  data() {
     return {
-      gambar_default : "",
-      thumbs : [
-        "mickey1.jpg",
-        "mickey2.jpg",
-        "mickey3.jpg",
-        "mickey4.jpg",
-      ],
-      detail_produk : [],
-    }
+      gambar_default: "",
+      detail_produk: [],
+      keranjangUser: [],
+    };
   },
-  methods : {
-    ubahGambar(url){
+  methods: {
+    ubahGambar(url) {
       this.gambar_default = url;
     },
-    setDataGambar(data){
+    setDataGambar(data) {
       this.detail_produk = data;
       this.gambar_default = data.galeri[0].foto_produk;
-    }
+    },
+    masukKeranjang(produkID, namaProduk, hargaProduk, fotoProduk) {
+      let produkStored = {
+        id: produkID,
+        nama: namaProduk,
+        harga: hargaProduk,
+        foto: fotoProduk,
+      };
+
+      this.keranjangUser.push(produkStored);
+      const data = JSON.stringify(this.keranjangUser);
+      localStorage.setItem("keranjangUser", data);
+    },
   },
   mounted() {
-    axios
-    .get("http://127.0.0.1:8000/api/produk", {
-      params: {
-        id: this.$route.params.id,
+    if (localStorage.getItem("keranjangUser")) {
+      try {
+        this.keranjangUser = JSON.parse(localStorage.getItem("keranjangUser"));
+      } catch (e) {
+        localStorage.removeItem("keranjangUser");
       }
-    })
-    .then(res => (this.setDataGambar(res.data.data)))
-    // eslint-disable-next-line no-console
-    .catch(err => console.log(err));
+    }
+
+    axios
+      .get("http://127.0.0.1:8000/api/produk", {
+        params: {
+          id: this.$route.params.id,
+        },
+      })
+      .then((res) => this.setDataGambar(res.data.data))
+      // eslint-disable-next-line no-console
+      .catch((err) => console.log(err));
   },
 };
 </script>
 <style scoped>
-.product-thumbs .pt{
+.product-thumbs .pt {
   margin-right: 10px;
 }
 </style>
